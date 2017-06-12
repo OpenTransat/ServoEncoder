@@ -13,6 +13,8 @@ Controls a motor by evaluating position feedback from a magnetic encoder
 
 * One can use a stepper motor by connecting the two-wire output to a stepper motor driver
 
+* PWM input like a typical servo
+
 * It provides a feedback to the main controller to determine if the motor is overloaded or stuck
 
 ![ServoEncoder PCB](https://github.com/OpenTransat/ServoEncoder/blob/master/images/servoencoder.jpg "ServoEncoder PCB")
