@@ -21,7 +21,7 @@ Controls a motor by evaluating position feedback from a magnetic encoder
 
 It has been designed as a robust solution for steering the rudder on autonomous boat. The life span has been tested with a worm geared motor JGY-2838.
 
-Ongoing test: 2 million cycles
+Ongoing test: 3 million cycles
 
 ## Video: Testing worm drive life span
 
