@@ -13,7 +13,7 @@ Controls a motor by evaluating position feedback from a magnetic encoder
 
 * One can use a stepper motor by connecting the two-wire output to a stepper motor driver
 
-* PWM input like a typical servo
+* PWM input like a typical servo or serial input (serial version has been chosen as it's more precise than reading the pulse length)
 
 * It provides a feedback to the main controller to determine if the motor is overloaded or stuck
 
@@ -21,7 +21,7 @@ Controls a motor by evaluating position feedback from a magnetic encoder
 
 It has been designed as a robust solution for steering the rudder on autonomous boat. The life span has been tested with a worm geared motor JGY-2838.
 
-Ongoing test: 3 million cycles
+Ongoing test: 2 million cycles
 
 ## Video: Testing worm drive life span
 
