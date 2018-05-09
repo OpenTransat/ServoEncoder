@@ -26,3 +26,7 @@ Ongoing test: 2 million cycles
 ## Video: Testing worm drive life span
 
 [![Testing worm drive life span](http://img.youtube.com/vi/ynh-ik3KGtM/0.jpg)](https://www.youtube.com/watch?v=ynh-ik3KGtM)
+
+## Video: The actual application
+
+[![Rudder control: Worm geared motor with a position feedback](http://img.youtube.com/vi/95Na8EOg1Mo/0.jpg)](https://www.youtube.com/watch?v=95Na8EOg1Mo)
