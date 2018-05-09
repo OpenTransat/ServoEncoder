@@ -5,9 +5,8 @@ https://github.com/OpenTransat/ServoEncoder
 Released under the Creative Commons Attribution ShareAlike 4.0 International License
 https://creativecommons.org/licenses/by-sa/4.0/
 */
-#include <avr/wdt.h>
 
-#define SERIAL_DEBUG
+//#define SERIAL_DEBUG
 #define RUN_MOTOR
 #define LED 14 //PC0
 #define PIN_CS 15 //PC1, EMS:6
@@ -43,8 +42,6 @@ void serialRead() {
 }
 
 void setup() {
-  wdt_disable();
-  
   pinMode(LED, OUTPUT);
 
   pinMode(PIN_ON, OUTPUT);
@@ -60,8 +57,9 @@ void setup() {
 
   Serial.begin(9600); //9600 supported for 2MHz
 
-  delay(1000L); //delay before watchdog to load bootloader https://bigdanzblog.wordpress.com/2014/10/24/arduino-watchdog-timer-wdt-example-code/
-  wdt_enable(WDTO_8S); //call last!
+  digitalWrite(LED, HIGH);
+  delay(100L);
+  digitalWrite(LED, LOW);
 }
 
 int enc_read() { //output: 0..1023, -1 = parity error
@@ -133,8 +131,7 @@ enum tstate {
 
 tstate state = STATE_IDLE;
 
-void loop() {
-  wdt_reset();
+void loop() {  
   serialRead();
   if (isNewPulse() || state != STATE_IDLE) {
     int enc_goto = map(pulse, 0, 255, ENC_MIN, ENC_MAX);
@@ -159,7 +156,6 @@ void loop() {
         unsigned long timeout_start = millis();
         
         while ((enc_pos = enc_read()) > enc_goto + CORRECTION_LEFT) {
-          wdt_reset();
           serialRead();
           if (isNewPulse()) {
             #ifdef SERIAL_DEBUG
@@ -201,7 +197,6 @@ void loop() {
         unsigned long timeout_start = millis();
         
         while ((enc_pos = enc_read()) < enc_goto + CORRECTION_RIGHT) {
-          wdt_reset();
           serialRead();
           if (isNewPulse()) { //TO BE TESTED
             #ifdef SERIAL_DEBUG
