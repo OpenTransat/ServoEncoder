@@ -14,13 +14,14 @@ https://creativecommons.org/licenses/by-sa/4.0/
 #define PIN_DO 16 //PC2, EMS:4
 #define PIN_ON 2 //active LOW
 #define PIN_REV 3 //active LOW
-#define ENC_ZERO 127
+#define ENC_ZERO 140
 #define ENC_MAXDIF 100
 #define ENC_MIN (ENC_ZERO - ENC_MAXDIF) //max left
 #define ENC_MAX (ENC_ZERO + ENC_MAXDIF) //max right
+#define ANGLE_MAX ((long)ENC_MAXDIF * 360 / 1023)
 #define MINCHANGE 1 //minimum PWM change to prevent flickering
 #define CORRECTION_LEFT (+11)
-#define CORRECTION_RIGHT (-10)
+#define CORRECTION_RIGHT (-11)
 
 #define FB_OK 47
 #define FB_TIMEOUT 123
@@ -108,6 +109,12 @@ bool isNewPulse() {
   pulse = pwm_pulse[PWM_PULSES-1]; //save pwm_pulse from interrupts
 //  pulse = ((millis() / 10000) % 4) * 500 + 1000; if (pulse > 2000) pulse = 1500; //simulation
 
+  if (pulse == 0 || pulse == 255) //omit these numbers (fool proof)
+    return false;
+
+  if (pulse > 140 || pulse < 60) //realistic interval
+    return false;
+
   static unsigned char prev_pulse;
 
   #ifdef SERIAL_DEBUG
@@ -134,10 +141,15 @@ tstate state = STATE_IDLE;
 void loop() {  
   serialRead();
   if (isNewPulse() || state != STATE_IDLE) {
-    int enc_goto = map(pulse, 0, 255, ENC_MIN, ENC_MAX);
+    
+    //int enc_goto = map(pulse, 0, 255, ENC_MIN, ENC_MAX);
+    //int enc_goto = map(pulse, 100 - ANGLE_MAX, 100 + ANGLE_MAX, ENC_MIN, ENC_MAX); //reads 100 + angle, converts to encoder interval
+    enc_goto = ((long)pulse - 100) * 1023 / 360 + ENC_ZERO;
+    
     enc_goto = max(enc_goto, ENC_MIN);
     enc_goto = min(enc_goto, ENC_MAX);
     int enc_pos = enc_read();
+    
     if (enc_pos > 0) { //encoder parity check OK
       #ifdef SERIAL_DEBUG
         Serial.print(pulse);
@@ -198,7 +210,7 @@ void loop() {
         
         while ((enc_pos = enc_read()) < enc_goto + CORRECTION_RIGHT) {
           serialRead();
-          if (isNewPulse()) { //TO BE TESTED
+          if (isNewPulse()) {
             #ifdef SERIAL_DEBUG
               Serial.println("Right: Interrupted by a new pulse");
             #endif
